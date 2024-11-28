@@ -79,29 +79,37 @@ def get_model():
     """
     model = tf.keras.models.Sequential(
         [
-            # Convolutional Layer
+            # Convolutional Layer with 32 filters, 3x3 kernel size, ReLU activation, and input shape
             tf.keras.layers.Conv2D(
                 32, (3, 3), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
             ),
-            # Max-pooling layer
+            # Max-pooling layer with 2x2 pool size
             tf.keras.layers.MaxPooling2D((2, 2)),
+            # Convolutional Layer with 64 filters, 3x3 kernel size, and ReLU activation
+            # Relu is a vector function that replaces negative values with zero
+            
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            # Max-pooling layer with 2x2 pool size
             tf.keras.layers.MaxPooling2D((2, 2)),
+            # Convolutional Layer with 128 filters, 3x3 kernel size, and ReLU activation
             tf.keras.layers.Conv2D(128, (3, 3), activation="relu"),
+            # Max-pooling layer with 2x2 pool size
             tf.keras.layers.MaxPooling2D((2, 2)),
-            # Flatten data
+            # Flatten data to prepare for the dense layers
             tf.keras.layers.Flatten(),
-            # Hidden layer
-            tf.keras.layers.Dense(units=128, activation="relu"),
-            # Dropout to prevent overfitting
+            # Hidden layer with 128 units and ReLU activation
+            # tf.keras.layers.Dense(units=128, activation="relu"),
+            # Dropout layer with 50% dropout rate to prevent overfitting
             tf.keras.layers.Dropout(0.5),
-            # Output layer
+            # Output layer with units equal to the number of categories and softmax activation
             tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax"),
         ]
     )
     # Train
     model.compile(
-        optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"]
+        #optimizer="adam",
+        optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.001),
+        loss="categorical_crossentropy", metrics=["accuracy",tf.keras.metrics.F1Score()]
     )
 
     return model
